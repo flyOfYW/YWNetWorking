@@ -1,0 +1,6 @@
+framework module YWNetWorking {
+  umbrella header "YWNetWorking-umbrella.h"
+
+  export *
+  module * { export * }
+}

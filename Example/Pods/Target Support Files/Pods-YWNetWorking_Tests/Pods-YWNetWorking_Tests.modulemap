@@ -1,0 +1,6 @@
+framework module Pods_YWNetWorking_Tests {
+  umbrella header "Pods-YWNetWorking_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}
