@@ -31,4 +31,7 @@
     
 + v0.1.4
     + 新增NSCache缓存
-    + 新增清除缓存Cache的API    
+    + 新增清除缓存Cache的API
+    
++ v0.1.6
+   +支持cocopod引入
