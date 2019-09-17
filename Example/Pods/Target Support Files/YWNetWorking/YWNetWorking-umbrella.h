@@ -22,6 +22,7 @@
 #import "YWServiceProtocol.h"
 #import "YWNetworkingProtocol.h"
 #import "YWURLResponse.h"
+#import "YWApiNetStatus.h"
 
 FOUNDATION_EXPORT double YWNetWorkingVersionNumber;
 FOUNDATION_EXPORT const unsigned char YWNetWorkingVersionString[];

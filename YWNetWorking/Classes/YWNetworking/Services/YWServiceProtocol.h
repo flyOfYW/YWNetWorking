@@ -14,7 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** 业务层的数据 */
 extern NSString * const YWApiValidateResultKeyResponseObject;
-/** ------- 扩展 -------- */
 /** 界面的提示语 */
 extern NSString * const YWApiValidateResultKeyResponseUserInfomation;
 /** 请求成功或者失败 */
@@ -64,7 +63,7 @@ extern NSString * const YWApiValidateResultKeyNSNotificationRefrenToken;
  @param error 服务端返回可能存在的错误
  @return 内部需要的字典；具体返回数据怎么处理，内部不关注
  */
-- (NSDictionary *)resultWithResponseObject:(id)responseObject
+- (NSDictionary *)resultWithResponseObject:(nullable id)responseObject
                                   response:(NSURLResponse *)response
                                      error:(NSError **)error;
 

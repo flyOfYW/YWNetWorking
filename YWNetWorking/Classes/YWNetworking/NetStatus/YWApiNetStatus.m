@@ -119,6 +119,9 @@
     if (!self.reachable) {
         return nil;
     }
+    if (self.isWifi == 1) {
+        return @"wifi";
+    }
     if (self.isWifi != 2) {
         return nil;
     }

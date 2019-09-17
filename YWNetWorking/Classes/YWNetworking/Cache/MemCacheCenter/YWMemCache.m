@@ -21,15 +21,18 @@
 
 - (nullable YWURLResponse *)findCachedRecordWithKey:(nonnull NSString *)key{
     NSData *cacheData = [self.cache objectForKey:key];
+    if (!cacheData) {
+        return nil;
+    }
     return [YWURLResponse getObjWithData:cacheData];
 }
 - (void)saveRespone:(nonnull YWURLResponse *)respone withKey:(NSString *)key{
     if (respone.content) {
         NSError *error = nil;
         NSData *data = [NSJSONSerialization dataWithJSONObject:respone.content options:0 error:&error];
-        if (!error) {
+        if (!error && data) {
             [self removeCacheForKey:key];
-            [self.cache setValue:data forKey:key];
+            [self.cache setObject:data forKey:key];
         }
     }
 }
@@ -42,7 +45,7 @@
 - (NSCache *)cache{
     if (_cache == nil) {
         _cache = [[NSCache alloc] init];
-        _cache.countLimit = [[YWConfigure sharedInstance] countLimit];
+        _cache.countLimit = [YWConfigure sharedInstance].countLimit == 0 ? 10 : [YWConfigure sharedInstance].countLimit;
     }
     return _cache;
 }

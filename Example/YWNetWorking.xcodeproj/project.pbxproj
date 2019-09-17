@@ -22,6 +22,9 @@
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
+		7B3CE520232F95EC005FC721 /* YWDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B3CE51F232F95EC005FC721 /* YWDemoViewController.m */; };
+		7B6A48E323307FD100A7BCB8 /* YWDemoApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B6A48E223307FD100A7BCB8 /* YWDemoApi.m */; };
+		7B6A48E623307FEC00A7BCB8 /* YWBaseService.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B6A48E523307FEC00A7BCB8 /* YWBaseService.m */; };
 		83C672DE5BB6D1D96E179AA4 /* Pods_YWNetWorking_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A59449995A9E238C086C47D /* Pods_YWNetWorking_Example.framework */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
 /* End PBXBuildFile section */
@@ -60,6 +63,12 @@
 		713546285090FA9708695F85 /* Pods-YWNetWorking_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YWNetWorking_Example.release.xcconfig"; path = "Target Support Files/Pods-YWNetWorking_Example/Pods-YWNetWorking_Example.release.xcconfig"; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7A59449995A9E238C086C47D /* Pods_YWNetWorking_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YWNetWorking_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7B3CE51E232F95EC005FC721 /* YWDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YWDemoViewController.h; sourceTree = "<group>"; };
+		7B3CE51F232F95EC005FC721 /* YWDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YWDemoViewController.m; sourceTree = "<group>"; };
+		7B6A48E123307FD100A7BCB8 /* YWDemoApi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YWDemoApi.h; sourceTree = "<group>"; };
+		7B6A48E223307FD100A7BCB8 /* YWDemoApi.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YWDemoApi.m; sourceTree = "<group>"; };
+		7B6A48E423307FEC00A7BCB8 /* YWBaseService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YWBaseService.h; sourceTree = "<group>"; };
+		7B6A48E523307FEC00A7BCB8 /* YWBaseService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YWBaseService.m; sourceTree = "<group>"; };
 		81192D97DEA9F639050B4A29 /* Pods_YWNetWorking_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YWNetWorking_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8FBA777B24688361BF27BF8F /* Pods-YWNetWorking_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YWNetWorking_Tests.debug.xcconfig"; path = "Target Support Files/Pods-YWNetWorking_Tests/Pods-YWNetWorking_Tests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -137,6 +146,7 @@
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
 				6003F5A5195388D20070C39A /* YWViewController.h */,
 				6003F5A6195388D20070C39A /* YWViewController.m */,
+				7B6A48E023307FB900A7BCB8 /* Demo */,
 				71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
@@ -185,6 +195,19 @@
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
 		};
+		7B6A48E023307FB900A7BCB8 /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				7B3CE51E232F95EC005FC721 /* YWDemoViewController.h */,
+				7B3CE51F232F95EC005FC721 /* YWDemoViewController.m */,
+				7B6A48E123307FD100A7BCB8 /* YWDemoApi.h */,
+				7B6A48E223307FD100A7BCB8 /* YWDemoApi.m */,
+				7B6A48E423307FEC00A7BCB8 /* YWBaseService.h */,
+				7B6A48E523307FEC00A7BCB8 /* YWBaseService.m */,
+			);
+			name = Demo;
+			sourceTree = "<group>";
+		};
 		C12713FB8D59B91512646FE6 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -207,7 +230,7 @@
 				6003F586195388D20070C39A /* Sources */,
 				6003F587195388D20070C39A /* Frameworks */,
 				6003F588195388D20070C39A /* Resources */,
-				3C5CB1FB8A4DC626B83CCDF8 /* [CP] Embed Pods Frameworks */,
+				19245C6333C3C0BF1A22C4FD /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -298,6 +321,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		19245C6333C3C0BF1A22C4FD /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-YWNetWorking_Example/Pods-YWNetWorking_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/YWNetWorking/YWNetWorking.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YWNetWorking.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-YWNetWorking_Example/Pods-YWNetWorking_Example-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		1BAF9BF9305F5B83614411A2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -318,26 +361,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		3C5CB1FB8A4DC626B83CCDF8 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-YWNetWorking_Example/Pods-YWNetWorking_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
-				"${BUILT_PRODUCTS_DIR}/YWNetWorking/YWNetWorking.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YWNetWorking.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-YWNetWorking_Example/Pods-YWNetWorking_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7C102819FB61A2BAC6219E0A /* [CP] Check Pods Manifest.lock */ = {
@@ -370,7 +393,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F59E195388D20070C39A /* YWAppDelegate.m in Sources */,
+				7B3CE520232F95EC005FC721 /* YWDemoViewController.m in Sources */,
+				7B6A48E323307FD100A7BCB8 /* YWDemoApi.m in Sources */,
 				6003F5A7195388D20070C39A /* YWViewController.m in Sources */,
+				7B6A48E623307FEC00A7BCB8 /* YWBaseService.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

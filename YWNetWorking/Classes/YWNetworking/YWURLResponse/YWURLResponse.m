@@ -49,6 +49,9 @@
 }
 + (instancetype)getObjWithData:(NSData *)responseData{
     NSError *error = nil;
+    if (!responseData) {
+        return nil;
+    }
     id cotent = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&error];
     if (error) {
         return nil;

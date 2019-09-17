@@ -335,7 +335,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     if (self.cacheType == YWCacheTypeMemory) {//NSCache线程安全
        __block NSString *key = @"";
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
-             [NSString stringWithFormat:@"%@%d%@",self.child.requestAddress,(int)self.child.requestType,[self transformToUrlParamString:respone.requestParams]];
+            key = [NSString stringWithFormat:@"%@%d%@",self.child.requestAddress,(int)self.child.requestType,[self transformToUrlParamString:respone.requestParams]];
             [YWCacheCenter saveRespone:respone cache:YWCacheTypeMemory withKey:key];
             dispatch_async(dispatch_get_main_queue(), ^{
                 key = nil;

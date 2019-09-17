@@ -7,15 +7,23 @@
 //
 
 #import "YWAppDelegate.h"
+#import <YWNetWorking/YWConfigure.h>
 
 @implementation YWAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    [[YWConfigure sharedInstance] setAutoCheckNet:YES];
+    [[YWConfigure sharedInstance] setConsolelogEnable:YES];
+    
     return YES;
 }
-
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application{
+    //收到内存警告的时候，清除内部的内存缓存
+    [YWConfigure clearMemory];
+}
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
