@@ -29,8 +29,8 @@ Pod::Spec.new do |s|
     s.ios.deployment_target = '8.0'
     
     #  s.source_files = 'YWNetWorking/Classes/YWNetWorking/**/*'
-    s.public_header_files = 'YWNetWorking/Classes/YWNetWorking/YWNetworkingProtocol.h'
-    s.source_files = 'YWNetWorking/Classes/YWNetWorking/YWNetworkingProtocol.h'
+#    s.public_header_files = 'YWNetWorking/Classes/YWNetWorking/YWNetworkingProtocol.h'
+#    s.source_files = 'YWNetWorking/Classes/YWNetWorking/YWNetworkingProtocol.h'
     
     
     s.subspec 'NetStatus' do |ns|

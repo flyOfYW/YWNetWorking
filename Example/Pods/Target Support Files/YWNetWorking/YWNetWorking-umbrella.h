@@ -10,7 +10,6 @@
 #endif
 #endif
 
-#import "YWNetworkingProtocol.h"
 #import "YWApiNetStatus.h"
 #import "YWApiAFAction.h"
 #import "YWBaseApiManager.h"
@@ -21,6 +20,7 @@
 #import "YWLogManager.h"
 #import "YWServiceManager.h"
 #import "YWServiceProtocol.h"
+#import "YWNetworkingProtocol.h"
 #import "YWURLResponse.h"
 
 FOUNDATION_EXPORT double YWNetWorkingVersionNumber;
