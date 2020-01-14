@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'YWNetWorking'
-  s.version          = '0.1.8'
+  s.version          = '0.1.9'
   s.summary          = 'iOS networking'
 
 # This description is used to generate tags and improve search results.
@@ -28,9 +28,14 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'YWNetWorking/Classes/YWNetWorking/**/*'
+#  s.source_files = 'YWNetWorking/Classes/YWNetWorking/**/*'
 
+  
+  s.subspec 'NetWork' do |ns|
+    ns.source_files = 'YWNetworking/Classes/YWNetworking/NetWork/**/*'
+  end
 
+  
   s.subspec 'NetStatus' do |ns|
     ns.source_files = 'YWNetworking/Classes/YWNetworking/NetStatus/*'
   end

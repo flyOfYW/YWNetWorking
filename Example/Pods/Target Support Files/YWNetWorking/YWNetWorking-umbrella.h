@@ -10,6 +10,7 @@
 #endif
 #endif
 
+#import "YWApiNetStatus.h"
 #import "YWApiAFAction.h"
 #import "YWBaseApiManager.h"
 #import "YWMemCache.h"
@@ -17,12 +18,10 @@
 #import "NSURLRequest+YWNetParams.h"
 #import "YWConfigure.h"
 #import "YWLogManager.h"
-#import "YWApiNetStatus.h"
 #import "YWServiceManager.h"
 #import "YWServiceProtocol.h"
 #import "YWNetworkingProtocol.h"
 #import "YWURLResponse.h"
-#import "YWApiNetStatus.h"
 
 FOUNDATION_EXPORT double YWNetWorkingVersionNumber;
 FOUNDATION_EXPORT const unsigned char YWNetWorkingVersionString[];
