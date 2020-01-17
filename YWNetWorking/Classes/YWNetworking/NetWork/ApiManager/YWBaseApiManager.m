@@ -175,9 +175,17 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     __weak typeof(self)weakSelf = self;
 
     NSNumber *taskIdentifier = [[YWApiAFAction sharedInstance] sendRequest:request service:service success:^(YWURLResponse * _Nonnull response) {
-        [weakSelf successedCallPrivate:response];
+        if (response.isCallAction) {
+            [weakSelf successedCallPrivate:response];
+        }else{
+            [weakSelf failedCallPrivate:response];
+        }
     } fail:^(YWURLResponse * _Nonnull response) {
-        [weakSelf failedCallPrivate:response];
+        if (response.isCallSucessAction) {
+            [weakSelf successedCallPrivate:response];
+        }else{
+            [weakSelf failedCallPrivate:response];
+        }
     }];
     
     [self.requestIdList addObject:taskIdentifier];
@@ -185,11 +193,6 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     return [taskIdentifier integerValue];
 }
 - (void)successedCallPrivate:(YWURLResponse *)response{
-    
-    if (!response.isCallAction) {
-        [self failedCallPrivate:response];
-        return;
-    }
     
     //1.移除当前的任务ID
     [self.requestIdList removeObject:@(response.requestId)];

@@ -14,8 +14,10 @@
 NSString * const YWApiValidateResultKeyResponseObject         = @"YWApiValidateResultKeyResponseObject";
 /** 界面的提示语 */
 NSString * const YWApiValidateResultKeyResponseUserInfomation = @"YWApiValidateResultKeyResponseUserInfomation";
-/** 请求成功或者失败 */
+/**当session请求成功时，业务层控制回调 成功或者失败 的方法*/
 NSString * const YWApiValidateResultKeyResponseCallStatus   = @"YWApiValidateResultKeyResponseCallStatus";
+/**当session请求失败时，业务层控制回调 成功或者失败 的方法*/
+NSString * const YWApiValidateResultKeyFailCallStatus   = @"YWApiValidateResultKeyFailCallStatus";
 
 /** 登录 */
 NSString * const YWApiValidateResultKeyNSNotificationLogin   = @"YWApiValidateResultKeyNSNotificationLogin";
@@ -70,7 +72,7 @@ NSString * const YWApiValidateResultKeyNSNotificationRefrenToken   = @"YWApiVali
                                                         YWURLResponse *respne = [[YWURLResponse alloc] initWithResponseObject:dict[YWApiValidateResultKeyResponseObject]
                                                                                                                       request:request
                                                                                                                     requestId:requestId userInformation:dict[YWApiValidateResultKeyResponseUserInfomation]
-                                                                                                                   callStatus:dict[YWApiValidateResultKeyResponseCallStatus]
+                                                                                                                   callStatus:dict
                                                                                                                         error:error];
                                                         
                                                         respne.needLogin = dict[YWApiValidateResultKeyNSNotificationLogin] ? [dict[YWApiValidateResultKeyNSNotificationLogin] boolValue] : NO;

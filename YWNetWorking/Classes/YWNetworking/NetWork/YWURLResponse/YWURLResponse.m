@@ -18,6 +18,8 @@
 @property (nonatomic, assign, readwrite) BOOL isCache;
 //默认YES
 @property (nonatomic, assign, readwrite) BOOL isCallAction;
+@property (nonatomic, assign, readwrite) BOOL isCallSucessAction;
+
 @property (nonatomic, copy,   readwrite) NSDictionary *requestParams;
 
 @end
@@ -39,9 +41,11 @@
         self.requestId = [requestId integerValue];
         self.userInformation = userInformation ? userInformation: [self responseStatusWithError:error];
         self.status = error ? error.code : 200;
-        self.isCallAction = YES;
+        _isCallAction = YES;
+        _isCallSucessAction = NO;
         if (callStatus) {
-            self.isCallAction = [callStatus boolValue];
+            _isCallAction = [callStatus[@"YWApiValidateResultKeyResponseCallStatus"] boolValue];
+            _isCallSucessAction = [callStatus[@"YWApiValidateResultKeyFailCallStatus"] boolValue];
         }
         self.requestParams = request.requestParams;
     }

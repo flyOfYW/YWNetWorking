@@ -16,8 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, readonly) NSInteger requestId;
 @property (nonatomic, strong, readonly) NSString *userInformation;
 @property (nonatomic, assign, readonly) BOOL isCache;
-//默认YES
+//默认YES call - fail delegate
 @property (nonatomic, assign,  readonly) BOOL isCallAction;
+//默认YES call - sucess delegate
+@property (nonatomic, assign,  readonly) BOOL isCallSucessAction;
 @property (nonatomic, copy,    readonly) NSDictionary *_Nullable requestParams;
 @property (nonatomic, assign           ) BOOL needLogin;
 @property (nonatomic, assign           ) BOOL refreshToken;

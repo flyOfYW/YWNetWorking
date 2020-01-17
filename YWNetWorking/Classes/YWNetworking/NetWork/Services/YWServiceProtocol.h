@@ -16,8 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 extern NSString * const YWApiValidateResultKeyResponseObject;
 /** 界面的提示语 */
 extern NSString * const YWApiValidateResultKeyResponseUserInfomation;
-/** 请求成功或者失败 */
+/**当session请求成功时，业务层控制回调 成功或者失败 的方法*/
 extern NSString * const YWApiValidateResultKeyResponseCallStatus;
+/**当session请求失败时，业务层控制回调 成功或者失败 的方法*/
+extern NSString * const YWApiValidateResultKeyFailCallStatus;
 
 
 /** ------- 通知的key -------- */
