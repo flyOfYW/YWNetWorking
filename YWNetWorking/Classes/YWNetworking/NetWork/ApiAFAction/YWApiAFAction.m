@@ -65,7 +65,7 @@ NSString * const YWApiValidateResultKeyNSNotificationRefrenToken   = @"YWApiVali
                                                         NSNumber *requestId = @([task taskIdentifier]);
                                                         [weakSelf.dispatchTable removeObjectForKey:requestId];
                                                         
-                                                        NSDictionary *dict = [service resultWithResponseObject:responseObject response:response error:&error];
+                                                        NSDictionary *dict = [service resultWithResponseObject:responseObject response:response error:error];
                                                         
                                                         YWURLResponse *respne = [[YWURLResponse alloc] initWithResponseObject:dict[YWApiValidateResultKeyResponseObject]
                                                                                                                       request:request

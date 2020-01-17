@@ -65,7 +65,7 @@ extern NSString * const YWApiValidateResultKeyNSNotificationRefrenToken;
  */
 - (NSDictionary *)resultWithResponseObject:(nullable id)responseObject
                                   response:(NSURLResponse *)response
-                                     error:(NSError **)error;
+                                     error:(NSError *)error;
 
 
 

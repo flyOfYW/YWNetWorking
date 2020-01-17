@@ -100,12 +100,12 @@
  */
 - (NSDictionary *)resultWithResponseObject:(id)responseObject
                                   response:(NSURLResponse *)response
-                                     error:(NSError **)error{
+                                     error:(NSError *)error{
     
     
     NSMutableDictionary *dict = [NSMutableDictionary new];
     
-    if (*error) {
+    if (error) {
         
         NSHTTPURLResponse * httpRespone = (NSHTTPURLResponse *)response;
         
