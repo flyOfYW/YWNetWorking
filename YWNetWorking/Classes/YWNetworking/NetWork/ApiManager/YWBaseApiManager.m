@@ -196,8 +196,11 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     
     //1.移除当前的任务ID
     [self.requestIdList removeObject:@(response.requestId)];
+    
     self.isLoading = NO;
-
+    self.response = response;
+    self.userInfomation = [NSString stringWithFormat:@"%@",response.userInformation];
+    
     //2.缓存数据
     
     [self saveCache:response];
@@ -209,14 +212,17 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     
     //4.回调
     if (_delegateHas.managerCallAPIDidSuccess) {
-        self.response = response;
-        self.userInfomation = [NSString stringWithFormat:@"%@",response.userInformation];
+
         [self successCallOnMainThread];
     }
 }
 - (void)failedCallPrivate:(YWURLResponse *)response{
     
     self.isLoading = NO;
+    
+    self.response = response;
+    
+    self.userInfomation = [NSString stringWithFormat:@"%@",response.userInformation];
     
     [self addNotifiAction:response.needLogin refreshToken:response.refreshToken];
     
@@ -254,8 +260,6 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
 
     //4.回调
     if (_delegateHas.managerCallAPIDidFailed) {
-        self.response = response;
-        self.userInfomation = [NSString stringWithFormat:@"%@",response.userInformation];
         [self failedCallOnMainThread];
     }
 }
