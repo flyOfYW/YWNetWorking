@@ -62,12 +62,14 @@ extern NSString * const YWApiValidateResultKeyNSNotificationRefrenToken;
 
  @param responseObject 服务端响应对象
  @param response 请求响应对象
+ @param requestId 当前请求对应的ID
  @param error 服务端返回可能存在的错误
  @return 内部需要的字典；具体返回数据怎么处理，内部不关注
  */
 - (NSDictionary *)resultWithResponseObject:(nullable id)responseObject
                                   response:(NSURLResponse *)response
-                                     error:(NSError *)error;
+                                 requestId:(NSNumber *)requestId
+                                     error:(nullable NSError *)error;
 
 
 

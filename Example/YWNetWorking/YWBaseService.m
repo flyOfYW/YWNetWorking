@@ -51,7 +51,7 @@
     NSURLRequest *request = nil;
     switch (requestType) {
         case YWAPIRequestTypeGet:
-           request = [self.requestSerializer requestWithMethod:@"GET" URLString:[NSString stringWithFormat:@"%@%@",self.baseURL,urlString] parameters:parameters error:nil];
+            request = [self.requestSerializer requestWithMethod:@"GET" URLString:[NSString stringWithFormat:@"%@%@",self.baseURL,urlString] parameters:parameters error:nil];
             break;
         case YWAPIRequestTypePut:
             request = [self.requestSerializer requestWithMethod:@"PUT" URLString:[NSString stringWithFormat:@"%@%@",self.baseURL,urlString] parameters:parameters error:nil];
@@ -59,7 +59,7 @@
         case YWAPIRequestTypePost:
             request = [self.requestSerializer requestWithMethod:@"POST" URLString:[NSString stringWithFormat:@"%@%@",self.baseURL,urlString] parameters:parameters error:nil];
             break;
-
+            
         default:
             break;
     }
@@ -70,7 +70,7 @@
 }
 /**
  更灵活的环境配置
-
+ 
  @return 环境
  */
 - (YWServiceAPIEnvironment)apiEnvironment{
@@ -100,6 +100,7 @@
  */
 - (NSDictionary *)resultWithResponseObject:(id)responseObject
                                   response:(NSURLResponse *)response
+                                 requestId:(nonnull NSNumber *)requestId
                                      error:(NSError *)error{
     
     
@@ -112,7 +113,7 @@
         if (httpRespone.statusCode == 401) {//需要登录
             dict[YWApiValidateResultKeyNSNotificationLogin] = @(YES);
             //或者需要刷新token
-//            dict[YWApiValidateResultKeyNSNotificationRefrenToken] = @(YES);
+            //            dict[YWApiValidateResultKeyNSNotificationRefrenToken] = @(YES);
         }
         return dict;
     }
@@ -121,19 +122,19 @@
     
     //{code:0,date:[],msg:操作成功}|{code:0,data:{},msg:操作成功}|{code:1,data:null,msg:未登录}|{code:2,data:null,msg:参数有误}
     
-//    if ([responseObject[@"code"] isEqual:@1]) {//需要登录
-//        dict[YWApiValidateResultKeyNSNotificationLogin] = @(YES);//只需要监听通知，key：YWApiValidateResultKeyNSNotificationLogin
-//    }else if ([responseObject[@"code"] isEqual:@2]){
-//        /*框架内部实现，控制回调的去向，因为可能业务工程师不需要关注api内部过多的逻辑，
-//        他只需要知道成功和失败即可，类似code=2，也是失败，所以写接口的工程师，可以控制的回调，根据需要选吧
-//        */
-//        dict[YWApiValidateResultKeyResponseCallStatus] = @(NO);//NO-代表，走失败的回调（- (void)managerCallAPIDidFailed:(nonnull YWBaseApiManager *)manager）
-//        //同时支持设置界面的提示语
-//        dict[YWApiValidateResultKeyResponseUserInfomation] = responseObject[@"msg"];
-//    }else{
-//        dict[YWApiValidateResultKeyResponseObject] = responseObject[@"data"];
-//    }
-//
+    //    if ([responseObject[@"code"] isEqual:@1]) {//需要登录
+    //        dict[YWApiValidateResultKeyNSNotificationLogin] = @(YES);//只需要监听通知，key：YWApiValidateResultKeyNSNotificationLogin
+    //    }else if ([responseObject[@"code"] isEqual:@2]){
+    //        /*框架内部实现，控制回调的去向，因为可能业务工程师不需要关注api内部过多的逻辑，
+    //        他只需要知道成功和失败即可，类似code=2，也是失败，所以写接口的工程师，可以控制的回调，根据需要选吧
+    //        */
+    //        dict[YWApiValidateResultKeyResponseCallStatus] = @(NO);//NO-代表，走失败的回调（- (void)managerCallAPIDidFailed:(nonnull YWBaseApiManager *)manager）
+    //        //同时支持设置界面的提示语
+    //        dict[YWApiValidateResultKeyResponseUserInfomation] = responseObject[@"msg"];
+    //    }else{
+    //        dict[YWApiValidateResultKeyResponseObject] = responseObject[@"data"];
+    //    }
+    //
     
     //当前的数据
     dict[YWApiValidateResultKeyResponseObject] = responseObject;

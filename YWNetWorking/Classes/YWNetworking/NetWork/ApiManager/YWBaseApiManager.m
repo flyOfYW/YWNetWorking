@@ -153,7 +153,9 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     id <YWServiceProtocol>serviceManager = [[YWServiceManager sharedInstance] serviceWithClass:self.child.serviceClassName];
     
     NSURLRequest *request = [serviceManager requestWithMethod:self.child.requestType URLString:self.child.requestAddress parameters:parmas];
-    request.requestParams = parmas;
+    if (!request.requestParams) {//如何外部没有赋值，则内部赋值
+        request.requestParams = parmas;
+    }
     if (!request) {
         self.isLoading = NO;
         self.userInfomation = @"初始化请求任务失败";

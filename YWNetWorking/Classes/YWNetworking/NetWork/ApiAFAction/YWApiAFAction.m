@@ -65,9 +65,8 @@ NSString * const YWApiValidateResultKeyNSNotificationRefrenToken   = @"YWApiVali
                                                     completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                                                         
                                                         NSNumber *requestId = @([task taskIdentifier]);
-                                                        [weakSelf.dispatchTable removeObjectForKey:requestId];
                                                         
-                                                        NSDictionary *dict = [service resultWithResponseObject:responseObject response:response error:error];
+                                                        NSDictionary *dict = [service resultWithResponseObject:responseObject response:response requestId:requestId error:error];
                                                         
                                                         YWURLResponse *respne = [[YWURLResponse alloc] initWithResponseObject:dict[YWApiValidateResultKeyResponseObject]
                                                                                                                       request:request
@@ -78,6 +77,8 @@ NSString * const YWApiValidateResultKeyNSNotificationRefrenToken   = @"YWApiVali
                                                         respne.needLogin = dict[YWApiValidateResultKeyNSNotificationLogin] ? [dict[YWApiValidateResultKeyNSNotificationLogin] boolValue] : NO;
                                                         respne.refreshToken = dict[YWApiValidateResultKeyNSNotificationRefrenToken] ? [dict[YWApiValidateResultKeyNSNotificationRefrenToken] boolValue] : NO;
                                                         
+                                                        [weakSelf.dispatchTable removeObjectForKey:requestId];
+        
                                                         [YWLogManager logDebugInfoWithResponse:(NSHTTPURLResponse *)response responseObject:dict[YWApiValidateResultKeyResponseObject] request:request error:error];
                                                         requestId = nil;
                                                         [manager.session finishTasksAndInvalidate];
