@@ -368,7 +368,9 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
 }
 //MARK: ------------------------------ Getter & Setter ----------------------------------
 - (BOOL)isReachable{
-    
+    if (_ignoreNetStatus) {
+        return YES;
+    }
     if ([YWConfigure sharedInstance].autoCheckNet) {//config控制
         return [YWApiNetStatus sharedInstance].isReachable;
     }

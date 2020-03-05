@@ -90,19 +90,8 @@
  *字典的格式
  key:YWTApiValidateResultKeyResponseObject|YWTApiValidateResultKeyResponseUserInfomation|YWTApiValidateResultKeyResponseObject:可选
  */
-/**
- 预处理服务端返回的信息
- 
- @param responseObject 服务端响应对象
- @param response 请求响应对象
- @param error 服务端返回可能存在的错误
- @return 内部需要的字典；具体返回数据怎么处理，内部不关注
- */
-- (NSDictionary *)resultWithResponseObject:(id)responseObject
-                                  response:(NSURLResponse *)response
-                                 requestId:(nonnull NSNumber *)requestId
-                                     error:(NSError *)error{
-    
+
+- (NSDictionary *)resultWithResponseObject:(id)responseObject request:(NSURLRequest *)request response:(NSURLResponse *)response error:(NSError *)error{
     
     NSMutableDictionary *dict = [NSMutableDictionary new];
     

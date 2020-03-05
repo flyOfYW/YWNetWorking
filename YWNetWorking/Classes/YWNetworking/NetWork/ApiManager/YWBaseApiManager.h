@@ -26,6 +26,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign         ) NSInteger timeOutRetryCount;
 @property (nonatomic, assign         ) YWCacheType cacheType;
 
+
+@property (nonatomic, assign, readonly) BOOL isLoading;
+
+/// 请求时，忽略网络状态，级别高于YWConfigure中的autoCheckNet
+@property (nonatomic, assign) BOOL ignoreNetStatus;
+
+
 /**
  类方法请求
  

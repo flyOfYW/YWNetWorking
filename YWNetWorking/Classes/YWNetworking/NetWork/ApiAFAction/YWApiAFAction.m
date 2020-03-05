@@ -66,7 +66,7 @@ NSString * const YWApiValidateResultKeyNSNotificationRefrenToken   = @"YWApiVali
                                                         
                                                         NSNumber *requestId = @([task taskIdentifier]);
                                                         
-                                                        NSDictionary *dict = [service resultWithResponseObject:responseObject response:response requestId:requestId error:error];
+                                                        NSDictionary *dict = [service resultWithResponseObject:responseObject request:request response:response error:error];
                                                         
                                                         YWURLResponse *respne = [[YWURLResponse alloc] initWithResponseObject:dict[YWApiValidateResultKeyResponseObject]
                                                                                                                       request:request
