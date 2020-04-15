@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM (NSUInteger, YWCacheType){
     YWCacheTypeDefalut = 0,//不需要缓存
     YWCacheTypeMemory = 1 ,//NSCache
+    YWCacheTypeCustom = 2,//自定义
 };
 
 @interface YWCacheCenter : NSObject

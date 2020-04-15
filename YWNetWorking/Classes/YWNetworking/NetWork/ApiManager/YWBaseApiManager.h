@@ -20,6 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) id <YWAPIManagerParamSource>        _Nullable paramSource;
 @property (nonatomic, weak) id <YWAPIManagerInterceptor>        _Nullable interceptor;
 @property (nonatomic, weak) id <YWAPIManagerValidator>          _Nullable validator;
+/**自定义缓存的时候，对返回数据以及查询缓存数据进行拦截处理*/
+@property (nonatomic, weak) id <YWAPIManagerCacheInterceptor>          _Nullable cache;
+
 
 @property (nonatomic, copy,  readonly) NSString * userInfomation;
 @property (nonatomic, strong         ) YWURLResponse * _Nullable response;

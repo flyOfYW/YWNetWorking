@@ -40,19 +40,19 @@ typedef NS_ENUM (NSUInteger, YWAPIValidatorErrorType){
 @required
 /**
  请求方式
-
+ 
  @return 请求方式
  */
 - (YWAPIRequestType)requestType;
 /**
  不为空的请求地址
-
+ 
  @return 请求地址
  */
 - (nonnull NSString *)requestAddress;
 /**
  管理service的类
-
+ 
  @return 类名
  */
 - (nonnull NSString *)serviceClassName;
@@ -71,13 +71,13 @@ typedef NS_ENUM (NSUInteger, YWAPIValidatorErrorType){
 @optional
 /**
  成功的回调
-
+ 
  @param manager api管理者
  */
 - (void)managerCallAPIDidSuccess:(nonnull YWBaseApiManager *)manager;
 /**
  失败的回调
-
+ 
  @param manager api管理者
  */
 - (void)managerCallAPIDidFailed:(nonnull YWBaseApiManager *)manager;
@@ -88,14 +88,14 @@ typedef NS_ENUM (NSUInteger, YWAPIValidatorErrorType){
 @optional
 /**
  超时自动请求前的回调
-
+ 
  @param manager api管理者
  @param retryCount 当前重连的次数
  */
 - (void)manager:(nonnull YWBaseApiManager *)manager retryCount:(NSInteger)retryCount;
 /**
  请求失败前的回调
-
+ 
  @param manager api管理者
  @param response 请求结果的管理者
  @return YES/NO,YES-继续往下执行，继续回调managerCallAPIDidFailed，NO-代码执行到当前，不需要回调managerCallAPIDidFailed了
@@ -116,7 +116,7 @@ typedef NS_ENUM (NSUInteger, YWAPIValidatorErrorType){
 @optional
 /**
  发送请求前的参数检验
-
+ 
  @param manager api管理者
  @param data 请求参数
  @return 错误定义
@@ -125,6 +125,26 @@ typedef NS_ENUM (NSUInteger, YWAPIValidatorErrorType){
 
 
 @end
+
+
+@protocol YWAPIManagerCacheInterceptor <NSObject>
+@optional
+/**
+ 拦截返回的数据进行自定义的缓存处理
+ 
+ @param manager api管理者
+ @param response 返回的数据对象
+ */
+- (void)manager:(nonnull YWBaseApiManager *)manager saveCache:(nullable YWURLResponse *)response;
+/**
+ 查询缓存数据进行
+ @param manager api管理者
+ @return 返回的数据对象
+ */
+- (nullable id)findCache:(nonnull YWBaseApiManager *)manager;
+
+@end
+
 
 
 

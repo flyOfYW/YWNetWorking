@@ -32,6 +32,9 @@ NS_ASSUME_NONNULL_BEGIN
                             callStatus:(id)callStatus
                                  error:(NSError *)error;
 + (instancetype)getObjWithData:(NSData *)responseData;
+/// 通过自定义的缓存方法初始化对象
+/// @param responseObject 数据
+- (instancetype)initWithCacheResponseObject:(id)responseObject;
 @end
 
 NS_ASSUME_NONNULL_END

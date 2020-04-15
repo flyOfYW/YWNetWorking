@@ -32,6 +32,10 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
         unsigned continueFail : 1;
         unsigned beforeSuccess : 1;
     } _interceptorHas;
+    struct {
+        unsigned saveCache : 1;
+        unsigned findCache : 1;
+    } _cacheHas;
 }
 @property (nonatomic, assign, readwrite) BOOL isLoading;
 @property (nonatomic, copy,   readwrite) NSString * userInfomation;
@@ -321,10 +325,10 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     if (!cache) {
         return YES;
     }
-    if (self.cacheType == YWCacheTypeDefalut) {
+    if (_cacheType == YWCacheTypeDefalut) {
         return YES;
     }
-    if (self.cacheType == YWCacheTypeMemory) {
+    if (_cacheType == YWCacheTypeMemory) {
         NSString *key = [NSString stringWithFormat:@"%@%d%@",self.child.requestAddress,(int)self.child.requestType,[self transformToUrlParamString:params]];
        YWURLResponse * respne = [YWCacheCenter findCache:YWCacheTypeMemory withKey:key];
         key = nil;
@@ -333,15 +337,24 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
         }
         [self successedCallPrivate:respne];
         return NO;
+    }else if (_cacheType == YWCacheTypeCustom){
+        if (_cacheHas.findCache) {
+             id content = [_cache findCache:self];
+            if (!content) {
+                return YES;
+            }
+            [self successedCallPrivate:[[YWURLResponse alloc] initWithCacheResponseObject:content]];
+            return NO;
+        }
     }
     return YES;
 }
 
 - (void)saveCache:(YWURLResponse *)respone{
-    if (self.cacheType == YWCacheTypeDefalut) {
+    if (_cacheType == YWCacheTypeDefalut) {
         return;
     }
-    if (self.cacheType == YWCacheTypeMemory) {//NSCache线程安全
+    if (_cacheType == YWCacheTypeMemory) {//NSCache线程安全
        __block NSString *key = @"";
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             key = [NSString stringWithFormat:@"%@%d%@",self.child.requestAddress,(int)self.child.requestType,[self transformToUrlParamString:respone.requestParams]];
@@ -351,6 +364,10 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
             });
             
         });
+    }else if (_cacheType == YWCacheTypeCustom){
+        if (_cacheHas.saveCache) {
+            [_cache manager:self saveCache:respone];
+        }
     }
 }
 - (NSString *)transformToUrlParamString:(NSDictionary *)params{
@@ -397,7 +414,11 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     _interceptorHas.continueFail = [interceptor respondsToSelector:@selector(manager:beforePerformFailWithResponse:)];
     _interceptorHas.beforeSuccess = [interceptor respondsToSelector:@selector(manager:beforePerformSuccessWithResponse:)];
 }
-
+- (void)setCache:(id<YWAPIManagerCacheInterceptor>)cache{
+    _cache = cache;
+    _cacheHas.saveCache = [cache respondsToSelector:@selector(manager:saveCache:)];
+    _cacheHas.findCache = [cache respondsToSelector:@selector(findCache:)];
+}
 - (void)dealloc{
     [self cancelAllRequests];
     self.requestIdList = nil;

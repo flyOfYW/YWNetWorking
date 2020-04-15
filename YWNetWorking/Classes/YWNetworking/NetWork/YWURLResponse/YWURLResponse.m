@@ -28,7 +28,21 @@
 
 @implementation YWURLResponse
 
-
+- (instancetype)initWithCacheResponseObject:(id)responseObject{
+    self = [super init];
+    if (self) {
+        _content = responseObject;
+        _requestId = 0;
+        _userInformation = @"本地查询成功";
+        _status = 200;
+        _isCallAction = YES;
+        _isCallSucessAction = NO;
+        _isCache = YES;
+        _requestParams = nil;
+    }
+    return self;
+    
+}
 - (instancetype)initWithResponseObject:(id)responseObject
                                request:(NSURLRequest *)request
                              requestId:(NSNumber *)requestId
