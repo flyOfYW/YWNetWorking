@@ -22,7 +22,9 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     struct {//因为考虑到成功或失败的回调可能会经常调用，因此使用结构体缓存状态
         unsigned managerCallAPIDidSuccess : 1;
         unsigned managerCallAPIDidFailed : 1;
-        
+        unsigned managerCallAPIDidRepeated : 1;
+        unsigned managerCallAPIDidFindedCacheSuccess : 1;
+        unsigned managerCallAPIDidFindedCacheFailed : 1;
     } _delegateHas;
     struct {
         unsigned validatorParmas : 1;
@@ -35,6 +37,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     struct {
         unsigned saveCache : 1;
         unsigned findCache : 1;
+        unsigned continueFindCache : 1;
     } _cacheHas;
 }
 @property (nonatomic, assign, readwrite) BOOL isLoading;
@@ -42,7 +45,9 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
 @property (nonatomic, strong           ) NSMutableArray *requestIdList;
 @property (nonatomic, strong,  nullable) void (^successBlock)(YWBaseApiManager *apimanager);
 @property (nonatomic, strong,  nullable) void (^failBlock)(YWBaseApiManager *apimanager);
+@property (nonatomic, strong,  nullable) void (^repeatedBlock)(YWBaseApiManager *apimanager);
 @property (nonatomic, assign           ) NSInteger currentRetryCount;
+@property (nonatomic, assign, readwrite) NSInteger currentRequestId;
 
 @end
 
@@ -65,8 +70,16 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     return self;
 }
 //MARK: ----------------------- Public Action --------------------------------
-+ (NSInteger)sendRequestWithParams:(NSDictionary *)params success:(void (^)(YWBaseApiManager * _Nonnull))successCallback fail:(void (^)(YWBaseApiManager * _Nonnull))failCallback{
-    return [[[self alloc] init] sendRequestWithParams:params success:successCallback fail:failCallback];
++ (NSInteger)sendRequestWithParams:(nullable NSDictionary *)params
+                          repeated:(void (^ _Nullable)(YWBaseApiManager * _Nonnull apiManager))repeatedCallback
+                           success:(void (^ _Nullable)(YWBaseApiManager * _Nonnull apiManager))successCallback
+                              fail:(void (^ _Nullable)(YWBaseApiManager * _Nonnull apiManager))failCallback{
+    return [[[self alloc] init] sendRequestWithParams:params repeated:repeatedCallback success:successCallback fail:failCallback];
+}
++ (NSInteger)sendRequestWithParams:(NSDictionary *)params
+                           success:(void (^)(YWBaseApiManager * _Nonnull))successCallback
+                              fail:(void (^)(YWBaseApiManager * _Nonnull))failCallback{
+    return [[[self alloc] init] sendRequestWithParams:params repeated:nil success:successCallback fail:failCallback];
 }
 - (NSInteger)sendRequest{
     
@@ -85,7 +98,8 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
 }
 - (NSInteger)retryRequest{
     if (self.isLoading) {
-        return -1;
+        [self repeatedRequestsCallOnMainThread];
+        return _currentRequestId;
     }
     return [self retryRequestWhenTimeOutIsRestRequestCount:YES];
 }
@@ -106,13 +120,19 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
 
 //MARK: ----------------------- Private Action ------------------------
 
-- (NSInteger)sendRequestWithParams:(NSDictionary *)params success:(void (^)(YWBaseApiManager *))successCallback fail:(void (^)(YWBaseApiManager *))failCallback{
-    
+- (NSInteger)sendRequestWithParams:(NSDictionary *)params
+                          repeated:(void (^ _Nullable)(YWBaseApiManager * _Nonnull apiManager))repeatedCallback
+                           success:(void (^)(YWBaseApiManager *))successCallback
+                              fail:(void (^)(YWBaseApiManager *))failCallback{
+    _repeatedBlock = repeatedCallback;
+    _successBlock = successCallback;
+    _failBlock = failCallback;
     return [self beforeSendRequest:params withRestCount:YES checkCache:YES];
 }
 - (NSInteger)sendRequestWithRestCount:(BOOL)rest checkCache:(BOOL)cache{
     if (self.isLoading) {
-        return -1;
+        [self repeatedRequestsCallOnMainThread];
+        return _currentRequestId;
     }
     if (![self checkNetStatus]) {
         return -1;
@@ -196,6 +216,8 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     
     [self.requestIdList addObject:taskIdentifier];
     
+    _currentRequestId = [taskIdentifier integerValue];
+    
     return [taskIdentifier integerValue];
 }
 - (void)successedCallPrivate:(YWURLResponse *)response{
@@ -217,10 +239,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     }
     
     //4.回调
-    if (_delegateHas.managerCallAPIDidSuccess) {
-
-        [self successCallOnMainThread];
-    }
+    [self successCallOnMainThread];
 }
 - (void)failedCallPrivate:(YWURLResponse *)response{
     
@@ -265,20 +284,56 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     [self.requestIdList removeObject:@(response.requestId)];
 
     //4.回调
-    if (_delegateHas.managerCallAPIDidFailed) {
-        [self failedCallOnMainThread];
-    }
+    [self failedCallOnMainThread];
 }
+//MARK: --- private call on main thread --------
 - (void)failedCallOnMainThread{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegate managerCallAPIDidFailed:self];
+        if (self->_delegateHas.managerCallAPIDidFailed) {
+            [self.delegate managerCallAPIDidFailed:self];
+        }else{
+            self.failBlock(self);
+        }
     });
 }
 - (void)successCallOnMainThread{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegate managerCallAPIDidSuccess:self];
+        if (self->_delegateHas.managerCallAPIDidSuccess) {
+            [self.delegate managerCallAPIDidSuccess:self];
+        }else{
+            self.successBlock(self);
+        }
     });
 }
+- (void)repeatedRequestsCallOnMainThread{
+    _userInfomation = @"请勿重复操作";
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self->_delegateHas.managerCallAPIDidRepeated) {
+            [self.delegate managerCallAPIDidRepeatedRequests:self];
+        }else{
+            self.repeatedBlock(self);
+        }
+    });
+}
+- (void)successCallOnMainThreadWhenFindCache:(YWURLResponse *)response{
+    
+    self.response = response;
+    self.userInfomation = [NSString stringWithFormat:@"%@",response.userInformation];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self->_delegateHas.managerCallAPIDidFindedCacheSuccess) {
+            [self.delegate managerCallAPIDidFindCacheSuccess:self];
+        }
+    });
+    
+}
+- (void)failedCallOnMainThreadWhenFindCache{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self->_delegateHas.managerCallAPIDidFindedCacheFailed) {
+            [self.delegate managerCallAPIDidFindCacheFailed:self];
+        }
+    });
+}
+//MARK: --- add NotifiActio ----
 - (void)addNotifiAction:(BOOL)needLogin refreshToken:(BOOL)refreshToken{
     if (needLogin) {
         [[NSNotificationCenter defaultCenter] postNotificationName:YWApiValidateResultKeyNSNotificationLogin
@@ -295,7 +350,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
                                                                      }];
     }
 }
-
+//MARK: ----- check -----
 ///检查该请求是否合理（地址以及参数等）
 - (BOOL)checkConditionSend:(NSDictionary *)parmas{
     if (!self.child.requestAddress || self.child.requestAddress.length <= 0) {
@@ -332,19 +387,34 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
         NSString *key = [NSString stringWithFormat:@"%@%d%@",self.child.requestAddress,(int)self.child.requestType,[self transformToUrlParamString:params]];
        YWURLResponse * respne = [YWCacheCenter findCache:YWCacheTypeMemory withKey:key];
         key = nil;
+        
         if (!respne) {
+            [self failedCallOnMainThreadWhenFindCache];
             return YES;
         }
-        [self successedCallPrivate:respne];
-        return NO;
+        [self successCallOnMainThreadWhenFindCache:respne];
+        
+        if (_cacheHas.continueFindCache) {
+            return [_cache managerIsContinueWhenFindCache:self];
+        }
+        
+        return YES;
+        
     }else if (_cacheType == YWCacheTypeCustom){
         if (_cacheHas.findCache) {
              id content = [_cache findCache:self];
             if (!content) {
+                [self failedCallOnMainThreadWhenFindCache];
                 return YES;
             }
-            [self successedCallPrivate:[[YWURLResponse alloc] initWithCacheResponseObject:content]];
-            return NO;
+            
+            [self successCallOnMainThreadWhenFindCache:[[YWURLResponse alloc] initWithCacheResponseObject:content]];
+            
+            if (_cacheHas.continueFindCache) {
+                return [_cache managerIsContinueWhenFindCache:self];
+            }
+            
+            return YES;
         }
     }
     return YES;
@@ -403,6 +473,10 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     _delegate = delegate;
     _delegateHas.managerCallAPIDidSuccess = [delegate respondsToSelector:@selector(managerCallAPIDidSuccess:)];
     _delegateHas.managerCallAPIDidFailed = [delegate respondsToSelector:@selector(managerCallAPIDidFailed:)];
+    _delegateHas.managerCallAPIDidRepeated = [delegate respondsToSelector:@selector(managerCallAPIDidRepeatedRequests:)];
+    _delegateHas.managerCallAPIDidFindedCacheSuccess = [delegate respondsToSelector:@selector(managerCallAPIDidFindCacheSuccess:)];
+    _delegateHas.managerCallAPIDidFindedCacheFailed = [delegate respondsToSelector:@selector(managerCallAPIDidFindCacheFailed:)];
+
 }
 - (void)setValidator:(id<YWAPIManagerValidator>)validator{
     _validator = validator;
@@ -418,6 +492,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     _cache = cache;
     _cacheHas.saveCache = [cache respondsToSelector:@selector(manager:saveCache:)];
     _cacheHas.findCache = [cache respondsToSelector:@selector(findCache:)];
+    _cacheHas.continueFindCache = [cache respondsToSelector:@selector(managerIsContinueWhenFindCache:)];
 }
 - (void)dealloc{
     [self cancelAllRequests];

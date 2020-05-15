@@ -29,13 +29,26 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign         ) NSInteger timeOutRetryCount;
 @property (nonatomic, assign         ) YWCacheType cacheType;
 
+@property (nonatomic, assign, readonly) NSInteger currentRequestId;
 
 @property (nonatomic, assign, readonly) BOOL isLoading;
 
 /// 请求时，忽略网络状态，级别高于YWConfigure中的autoCheckNet
 @property (nonatomic, assign) BOOL ignoreNetStatus;
 
-
+/**
+ 类方法请求
+ 
+ @param params 参数
+ @param repeatedCallback 当发生重复请求的回调
+ @param successCallback 成功的回调
+ @param failCallback 失败的回调
+ @return 对应的taskIdentifier
+ */
++ (NSInteger)sendRequestWithParams:(nullable NSDictionary *)params
+                          repeated:(void (^ _Nullable)(YWBaseApiManager * _Nonnull apiManager))repeatedCallback
+                           success:(void (^ _Nullable)(YWBaseApiManager * _Nonnull apiManager))successCallback
+                              fail:(void (^ _Nullable)(YWBaseApiManager * _Nonnull apiManager))failCallback;
 /**
  类方法请求
  

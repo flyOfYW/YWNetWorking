@@ -60,7 +60,7 @@ typedef NS_ENUM (NSUInteger, YWAPIValidatorErrorType){
 @end
 
 @protocol YWAPIManagerParamSource <NSObject>
-
+@required
 - (nullable NSDictionary *)paramsForApi:(nonnull YWBaseApiManager *)manager;
 
 
@@ -81,6 +81,26 @@ typedef NS_ENUM (NSUInteger, YWAPIValidatorErrorType){
  @param manager api管理者
  */
 - (void)managerCallAPIDidFailed:(nonnull YWBaseApiManager *)manager;
+/**
+ 当发生重复请求时的回调
+ 
+ @param manager api管理者
+ */
+- (void)managerCallAPIDidRepeatedRequests:(nonnull YWBaseApiManager *)manager;
+/**
+ 当查询本地缓存成功且有数据的回调
+ 
+ @param manager api管理者
+ */
+- (void)managerCallAPIDidFindCacheSuccess:(nonnull YWBaseApiManager *)manager;
+/**
+ 当查询本地缓存失败(无数据)的回调
+ 
+ @param manager api管理者
+ */
+- (void)managerCallAPIDidFindCacheFailed:(nonnull YWBaseApiManager *)manager;
+
+
 @end
 
 
@@ -142,6 +162,10 @@ typedef NS_ENUM (NSUInteger, YWAPIValidatorErrorType){
  @return 返回的数据对象
  */
 - (nullable id)findCache:(nonnull YWBaseApiManager *)manager;
+
+/// 当找到缓存了，是否继续发送网络请求
+/// @param manager api管理者
+- (BOOL)managerIsContinueWhenFindCache:(nonnull YWBaseApiManager *)manager;
 
 @end
 
