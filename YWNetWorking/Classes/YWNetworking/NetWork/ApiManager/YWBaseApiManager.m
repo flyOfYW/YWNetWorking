@@ -23,8 +23,6 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
         unsigned managerCallAPIDidSuccess : 1;
         unsigned managerCallAPIDidFailed : 1;
         unsigned managerCallAPIDidRepeated : 1;
-        unsigned managerCallAPIDidFindedCacheSuccess : 1;
-        unsigned managerCallAPIDidFindedCacheFailed : 1;
     } _delegateHas;
     struct {
         unsigned validatorParmas : 1;
@@ -38,6 +36,8 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
         unsigned saveCache : 1;
         unsigned findCache : 1;
         unsigned continueFindCache : 1;
+        unsigned managerCallAPIDidFindedCacheSuccess : 1;
+        unsigned managerCallAPIDidFindedCacheFailed : 1;
     } _cacheHas;
 }
 @property (nonatomic, assign, readwrite) BOOL isLoading;
@@ -318,18 +318,18 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
 - (void)successCallOnMainThreadWhenFindCache:(YWURLResponse *)response{
     
     self.response = response;
-    self.userInfomation = [NSString stringWithFormat:@"%@",response.userInformation];
+    self.userInfomation = response.userInformation ? [NSString stringWithFormat:@"%@",response.userInformation] : @"成功";
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self->_delegateHas.managerCallAPIDidFindedCacheSuccess) {
-            [self.delegate managerCallAPIDidFindCacheSuccess:self];
+        if (self->_cacheHas.managerCallAPIDidFindedCacheSuccess) {
+            [self.cache managerCallAPIDidFindCacheSuccess:self];
         }
     });
     
 }
 - (void)failedCallOnMainThreadWhenFindCache{
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self->_delegateHas.managerCallAPIDidFindedCacheFailed) {
-            [self.delegate managerCallAPIDidFindCacheFailed:self];
+        if (self->_cacheHas.managerCallAPIDidFindedCacheFailed) {
+            [self.cache managerCallAPIDidFindCacheFailed:self];
         }
     });
 }
@@ -387,34 +387,37 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
         NSString *key = [NSString stringWithFormat:@"%@%d%@",self.child.requestAddress,(int)self.child.requestType,[self transformToUrlParamString:params]];
        YWURLResponse * respne = [YWCacheCenter findCache:YWCacheTypeMemory withKey:key];
         key = nil;
-        
         if (!respne) {
             [self failedCallOnMainThreadWhenFindCache];
             return YES;
         }
         [self successCallOnMainThreadWhenFindCache:respne];
-        
+        BOOL isContinue = YES;
         if (_cacheHas.continueFindCache) {
-            return [_cache managerIsContinueWhenFindCache:self];
+            isContinue = [_cache managerIsContinueWhenFindCache:self];
+            if (!isContinue) {
+                _isLoading = NO;
+            }
         }
         
-        return YES;
+        return isContinue;
         
     }else if (_cacheType == YWCacheTypeCustom){
         if (_cacheHas.findCache) {
-             id content = [_cache findCache:self];
+            id content = [_cache findCache:self];
             if (!content) {
                 [self failedCallOnMainThreadWhenFindCache];
                 return YES;
             }
-            
             [self successCallOnMainThreadWhenFindCache:[[YWURLResponse alloc] initWithCacheResponseObject:content]];
-            
+            BOOL isContinue = YES;
             if (_cacheHas.continueFindCache) {
-                return [_cache managerIsContinueWhenFindCache:self];
+                isContinue = [_cache managerIsContinueWhenFindCache:self];
+                if (!isContinue) {
+                    _isLoading = NO;
+                }
             }
-            
-            return YES;
+            return isContinue;
         }
     }
     return YES;
@@ -474,9 +477,6 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     _delegateHas.managerCallAPIDidSuccess = [delegate respondsToSelector:@selector(managerCallAPIDidSuccess:)];
     _delegateHas.managerCallAPIDidFailed = [delegate respondsToSelector:@selector(managerCallAPIDidFailed:)];
     _delegateHas.managerCallAPIDidRepeated = [delegate respondsToSelector:@selector(managerCallAPIDidRepeatedRequests:)];
-    _delegateHas.managerCallAPIDidFindedCacheSuccess = [delegate respondsToSelector:@selector(managerCallAPIDidFindCacheSuccess:)];
-    _delegateHas.managerCallAPIDidFindedCacheFailed = [delegate respondsToSelector:@selector(managerCallAPIDidFindCacheFailed:)];
-
 }
 - (void)setValidator:(id<YWAPIManagerValidator>)validator{
     _validator = validator;
@@ -493,6 +493,8 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     _cacheHas.saveCache = [cache respondsToSelector:@selector(manager:saveCache:)];
     _cacheHas.findCache = [cache respondsToSelector:@selector(findCache:)];
     _cacheHas.continueFindCache = [cache respondsToSelector:@selector(managerIsContinueWhenFindCache:)];
+    _cacheHas.managerCallAPIDidFindedCacheSuccess = [cache respondsToSelector:@selector(managerCallAPIDidFindCacheSuccess:)];
+    _cacheHas.managerCallAPIDidFindedCacheFailed = [cache respondsToSelector:@selector(managerCallAPIDidFindCacheFailed:)];
 }
 - (void)dealloc{
     [self cancelAllRequests];
