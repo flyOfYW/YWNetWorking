@@ -134,9 +134,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
         [self repeatedRequestsCallOnMainThread];
         return _currentRequestId;
     }
-    if (![self checkNetStatus]) {
-        return -1;
-    }
+
     NSDictionary *parmas = [self.paramSource paramsForApi:self];
     
     return [self beforeSendRequest:parmas withRestCount:rest checkCache:cache];
@@ -171,6 +169,10 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
 - (NSInteger)startSendRequest:(NSDictionary *)parmas withRestCount:(BOOL)rest checkCache:(BOOL)cache{
     
     if (![self checkCacheStatus:cache params:parmas]) {
+        return -1;
+    }
+    //发起网络前，才网络判断
+    if (![self checkNetStatus]) {
         return -1;
     }
     
