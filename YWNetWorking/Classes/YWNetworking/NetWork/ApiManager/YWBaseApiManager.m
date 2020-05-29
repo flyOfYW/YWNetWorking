@@ -17,29 +17,34 @@
 NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerToContinueWhenUserTokenNotificationKey";
 
 
+struct DelegateFlagHas{//因为考虑到成功或失败的回调可能会经常调用，因此使用结构体缓存状态
+    unsigned int managerCallAPIDidSuccess : 1;
+    unsigned int managerCallAPIDidFailed : 1;
+    unsigned int managerCallAPIDidRepeated : 1;
+};
+struct ValidatorFlagHas{
+    unsigned int validatorParmas : 1;
+} ;
+struct InterceptorFlagHas{
+    unsigned int retryCount : 1;
+    unsigned int continueFail : 1;
+    unsigned int beforeSuccess : 1;
+} ;
+struct CacheFlagHas{
+    unsigned int saveCache : 1;
+    unsigned int findCache : 1;
+    unsigned int continueFindCache : 1;
+    unsigned int managerCallAPIDidFindedCacheSuccess : 1;
+    unsigned int managerCallAPIDidFindedCacheFailed : 1;
+} ;
+
 @interface YWBaseApiManager ()
-{
-    struct {//因为考虑到成功或失败的回调可能会经常调用，因此使用结构体缓存状态
-        unsigned managerCallAPIDidSuccess : 1;
-        unsigned managerCallAPIDidFailed : 1;
-        unsigned managerCallAPIDidRepeated : 1;
-    } _delegateHas;
-    struct {
-        unsigned validatorParmas : 1;
-    } _validatorHas;
-    struct {
-        unsigned retryCount : 1;
-        unsigned continueFail : 1;
-        unsigned beforeSuccess : 1;
-    } _interceptorHas;
-    struct {
-        unsigned saveCache : 1;
-        unsigned findCache : 1;
-        unsigned continueFindCache : 1;
-        unsigned managerCallAPIDidFindedCacheSuccess : 1;
-        unsigned managerCallAPIDidFindedCacheFailed : 1;
-    } _cacheHas;
-}
+
+@property (nonatomic, assign) struct DelegateFlagHas delegateHas;
+@property (nonatomic, assign) struct ValidatorFlagHas validatorHas;
+@property (nonatomic, assign) struct InterceptorFlagHas interceptorHas;
+@property (nonatomic, assign) struct CacheFlagHas cacheHas;
+
 @property (nonatomic, assign, readwrite) BOOL isLoading;
 @property (nonatomic, copy,   readwrite) NSString * userInfomation;
 @property (nonatomic, strong           ) NSMutableArray *requestIdList;
@@ -84,7 +89,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
 - (NSInteger)sendRequest{
     
     //1.check url&parma
-
+    
     //2.check cache
     
     //3.send request
@@ -93,7 +98,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     
     //5.call&cache
     
-   return [self sendRequestWithRestCount:YES checkCache:YES];
+    return [self sendRequestWithRestCount:YES checkCache:YES];
     
 }
 - (NSInteger)retryRequest{
@@ -134,7 +139,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
         [self repeatedRequestsCallOnMainThread];
         return _currentRequestId;
     }
-
+    
     NSDictionary *parmas = [self.paramSource paramsForApi:self];
     
     return [self beforeSendRequest:parmas withRestCount:rest checkCache:cache];
@@ -201,7 +206,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     }
     
     __weak typeof(self)weakSelf = self;
-
+    
     NSNumber *taskIdentifier = [[YWApiAFAction sharedInstance] sendRequest:request service:service success:^(YWURLResponse * _Nonnull response) {
         if (response.isCallAction) {
             [weakSelf successedCallPrivate:response];
@@ -256,13 +261,13 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     //1.拦截器(处理一些错误，比如登录/刷新token)
     BOOL isContinue = YES;
     if (_interceptorHas.continueFail) {
-       isContinue = [_interceptor manager:self beforePerformFailWithResponse:response];
+        isContinue = [_interceptor manager:self beforePerformFailWithResponse:response];
     }
     if (!isContinue) {
         
         return;
     }
-
+    
     //2.超时重试机制
     
     if (response.status == NSURLErrorTimedOut) {
@@ -273,7 +278,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
                 [YWLogManager logDebugInfoWithRetryApiName:self.child.requestAddress retryCount:retry];
                 [self retryRequestWhenTimeOutIsRestRequestCount:NO];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    if (self->_interceptorHas.retryCount) {
+                    if (self.interceptorHas.retryCount) {
                         [self.interceptor manager:self retryCount:retry];
                     }
                 });
@@ -284,36 +289,42 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     
     //3.移除当前的任务ID
     [self.requestIdList removeObject:@(response.requestId)];
-
+    
     //4.回调
     [self failedCallOnMainThread];
 }
 //MARK: --- private call on main thread --------
 - (void)failedCallOnMainThread{
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self->_delegateHas.managerCallAPIDidFailed) {
+        if (self.delegateHas.managerCallAPIDidFailed) {
             [self.delegate managerCallAPIDidFailed:self];
         }else{
-            self.failBlock(self);
+            if (self.failBlock) {
+                self.failBlock(self);
+            }
         }
     });
 }
 - (void)successCallOnMainThread{
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self->_delegateHas.managerCallAPIDidSuccess) {
+        if (self.delegateHas.managerCallAPIDidSuccess) {
             [self.delegate managerCallAPIDidSuccess:self];
         }else{
-            self.successBlock(self);
+            if (self.successBlock) {
+                self.successBlock(self);
+            }
         }
     });
 }
 - (void)repeatedRequestsCallOnMainThread{
     _userInfomation = @"请勿重复操作";
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self->_delegateHas.managerCallAPIDidRepeated) {
+        if (self.delegateHas.managerCallAPIDidRepeated) {
             [self.delegate managerCallAPIDidRepeatedRequests:self];
         }else{
-            self.repeatedBlock(self);
+            if (self.repeatedBlock) {
+                self.repeatedBlock(self);
+            }
         }
     });
 }
@@ -322,7 +333,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     self.response = response;
     self.userInfomation = response.userInformation ? [NSString stringWithFormat:@"%@",response.userInformation] : @"成功";
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self->_cacheHas.managerCallAPIDidFindedCacheSuccess) {
+        if (self.cacheHas.managerCallAPIDidFindedCacheSuccess) {
             [self.cache managerCallAPIDidFindCacheSuccess:self];
         }
     });
@@ -330,7 +341,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
 }
 - (void)failedCallOnMainThreadWhenFindCache{
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self->_cacheHas.managerCallAPIDidFindedCacheFailed) {
+        if (self.cacheHas.managerCallAPIDidFindedCacheFailed) {
             [self.cache managerCallAPIDidFindCacheFailed:self];
         }
     });
@@ -341,15 +352,15 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
         [[NSNotificationCenter defaultCenter] postNotificationName:YWApiValidateResultKeyNSNotificationLogin
                                                             object:nil
                                                           userInfo:@{
-                                                                     YWManagerToContinueWhenUserTokenNotificationKey:self
-                                                                     }];
+                                                              YWManagerToContinueWhenUserTokenNotificationKey:self
+                                                          }];
     }
     if (refreshToken) {
         [[NSNotificationCenter defaultCenter] postNotificationName:YWApiValidateResultKeyNSNotificationRefrenToken
                                                             object:nil
                                                           userInfo:@{
-                                                                     YWManagerToContinueWhenUserTokenNotificationKey:self
-                                                                     }];
+                                                              YWManagerToContinueWhenUserTokenNotificationKey:self
+                                                          }];
     }
 }
 //MARK: ----- check -----
@@ -371,11 +382,11 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
 }
 - (BOOL)checkNetStatus{
     if (![self isReachable]) {
-         self.isLoading = NO;
-         self.userInfomation = [NSString stringWithFormat:@"%@",[YWConfigure sharedInstance].netError];
-         [self failedCallOnMainThread];
-         return NO;
-     }
+        self.isLoading = NO;
+        self.userInfomation = [NSString stringWithFormat:@"%@",[YWConfigure sharedInstance].netError];
+        [self failedCallOnMainThread];
+        return NO;
+    }
     return YES;
 }
 - (BOOL)checkCacheStatus:(BOOL)cache params:(NSDictionary *)params{
@@ -387,7 +398,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
     }
     if (_cacheType == YWCacheTypeMemory) {
         NSString *key = [NSString stringWithFormat:@"%@%d%@",self.child.requestAddress,(int)self.child.requestType,[self transformToUrlParamString:params]];
-       YWURLResponse * respne = [YWCacheCenter findCache:YWCacheTypeMemory withKey:key];
+        YWURLResponse * respne = [YWCacheCenter findCache:YWCacheTypeMemory withKey:key];
         key = nil;
         if (!respne) {
             [self failedCallOnMainThreadWhenFindCache];
@@ -430,7 +441,7 @@ NSString * const YWManagerToContinueWhenUserTokenNotificationKey = @"YWManagerTo
         return;
     }
     if (_cacheType == YWCacheTypeMemory) {//NSCache线程安全
-       __block NSString *key = @"";
+        __block NSString *key = @"";
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             key = [NSString stringWithFormat:@"%@%d%@",self.child.requestAddress,(int)self.child.requestType,[self transformToUrlParamString:respone.requestParams]];
             [YWCacheCenter saveRespone:respone cache:YWCacheTypeMemory withKey:key];
