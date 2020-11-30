@@ -9,13 +9,10 @@
 #import "YWServiceManager.h"
 
 @interface YWServiceManager ()
-
-@property (nonatomic, strong) NSMutableDictionary *serviceStorage;
-
+@property (nonatomic, strong) NSCache *serviceStorage;
 @end
 
 @implementation YWServiceManager
-
 + (instancetype)sharedInstance{
     static dispatch_once_t onceToken;
     static YWServiceManager *sharedInstance;
@@ -26,19 +23,22 @@
 }
 - (id<YWServiceProtocol>)serviceWithClass:(NSString *)className{
     NSString *identifier = [NSString stringWithFormat:@"identifier_%@",className];
-    if (self.serviceStorage[identifier] == nil) {
-        self.serviceStorage[identifier] = [NSClassFromString(className) new];
+    id <YWServiceProtocol>obj = [self.serviceStorage objectForKey:identifier];
+    if ( obj == nil) {
+         obj = [NSClassFromString(className) new];
+        [self.serviceStorage setObject:obj forKey:identifier];
     }
-    return self.serviceStorage[identifier];
+    return obj;
+}
+- (NSCache *)serviceStorage{
+    if (_serviceStorage == nil) {
+        _serviceStorage = [[NSCache alloc] init];
+    }
+    return _serviceStorage;
 }
 - (void)deallocStorage{
     [self.serviceStorage removeAllObjects];
     self.serviceStorage = nil;
 }
-- (NSMutableDictionary *)serviceStorage{
-    if (_serviceStorage == nil) {
-        _serviceStorage = [[NSMutableDictionary alloc] init];
-    }
-    return _serviceStorage;
-}
+
 @end

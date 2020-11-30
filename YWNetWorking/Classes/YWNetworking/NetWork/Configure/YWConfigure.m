@@ -32,7 +32,7 @@ static YWConfigure *sharedInstance;
     return [YWConfigure sharedInstance];
 }
 + (NSString *)version{
-    return @"0.1.19";
+    return @"0.2.0";
 }
 + (void)clearMemory{
     [[YWServiceManager sharedInstance] deallocStorage];
