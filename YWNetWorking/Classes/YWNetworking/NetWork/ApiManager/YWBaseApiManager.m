@@ -180,7 +180,6 @@ struct CacheFlagHas{
     if (![self checkNetStatus]) {
         return -1;
     }
-    
     id <YWServiceProtocol>serviceManager = [[YWServiceManager sharedInstance] serviceWithClass:self.child.serviceClassName];
     
     NSURLRequest *request = [serviceManager requestWithMethod:self.child.requestType URLString:self.child.requestAddress parameters:parmas];
@@ -381,11 +380,23 @@ struct CacheFlagHas{
     return YES;
 }
 - (BOOL)checkNetStatus{
+    
     if (![self isReachable]) {
         self.isLoading = NO;
         self.userInfomation = [NSString stringWithFormat:@"%@",[YWConfigure sharedInstance].netError];
         [self failedCallOnMainThread];
         return NO;
+    }
+    
+    //有网络时，是否启用代理检测
+    if ([YWConfigure sharedInstance].autoCheckNet) {
+        //检测是否设置代理，yes
+        if ([YWApiNetStatus sharedInstance].isProxyStatus) {
+            self.isLoading = NO;
+            self.userInfomation = @"当前网络不安全,手机网络存在代理设置请,检查后再试!";
+            [self failedCallOnMainThread];
+            return NO;
+        }
     }
     return YES;
 }

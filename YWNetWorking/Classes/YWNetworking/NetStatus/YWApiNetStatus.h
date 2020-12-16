@@ -21,6 +21,11 @@ NS_ASSUME_NONNULL_BEGIN
  是否wifi，1-wift，2-手机流量,默认0
  */
 @property (nonatomic, assign, readonly,      getter=isWifi) NSInteger wifi;
+/**
+ 手机的网络是否设置了代理
+ */
+@property (nonatomic, assign, readonly, getter=isProxyStatus) BOOL proxyStatus;
+
 
 /**
  获取全局唯一的监听网络状态对象
@@ -32,6 +37,11 @@ NS_ASSUME_NONNULL_BEGIN
  开始监听网络状态
  */
 - (void)startMonitoring;
+
+/**
+ 简单检测手机的网络是否设置了代理
+ */
+- (void)simpleCheckProxyStatus;
 /**
  获取当前网络类型
 

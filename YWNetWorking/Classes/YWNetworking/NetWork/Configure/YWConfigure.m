@@ -48,5 +48,11 @@ static YWConfigure *sharedInstance;
         [[YWApiNetStatus sharedInstance] startMonitoring];
     }
 }
+- (void)setAutoProxyStatus:(BOOL)autoProxyStatus{
+    _autoProxyStatus = autoProxyStatus;
+    if (autoProxyStatus) {
+        [[YWApiNetStatus sharedInstance] simpleCheckProxyStatus];
+    }
+}
 
 @end

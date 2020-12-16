@@ -31,6 +31,7 @@
 @interface YWApiNetStatus ()
 @property (nonatomic, assign, readwrite, getter=isReachable) BOOL reachable;
 @property (nonatomic, assign, readwrite,      getter=isWifi) NSInteger wifi;
+@property (nonatomic, assign, readwrite, getter=isProxyStatus) BOOL proxyStatus;
 @end
 
 @implementation YWApiNetStatus
@@ -63,7 +64,7 @@
 }
 - (void)startMonitoringOnAFNetworkReachabilityManager{
 #if HasAFNetworkReachability
-
+    
     // 创建网络监听管理者
     AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
     // 监听网络状态
@@ -113,6 +114,29 @@
 #endif
     
 }
+
+- (void)simpleCheckProxyStatus {
+    
+    NSDictionary *proxySettings = (__bridge NSDictionary *)(CFNetworkCopySystemProxySettings());
+    
+    NSArray *proxies = (__bridge NSArray *)(CFNetworkCopyProxiesForURL((__bridge CFURLRef _Nonnull)([NSURL URLWithString:@"https://www.baidu.com"]), (__bridge CFDictionaryRef _Nonnull)(proxySettings)));
+    
+    NSDictionary *settings = [proxies objectAtIndex:0];
+    
+    if ([[settings objectForKey:(NSString *)kCFProxyTypeKey]
+         isEqualToString:@"kCFProxyTypeNone"]){
+        @synchronized (self) {
+            self.proxyStatus = NO;
+        }
+        //没有设置代理
+    }else{
+        @synchronized (self) {
+            self.proxyStatus = YES;
+        }
+        //设置代理了
+    }
+}
+
 
 - (NSString *)getNetType{
     
