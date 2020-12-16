@@ -1,6 +1,6 @@
 {
   "name": "YWNetWorking",
-  "version": "0.1.9",
+  "version": "0.2.2",
   "summary": "iOS networking",
   "description": "灵活定制的网络请求框架",
   "homepage": "https://github.com/flyOfYW/YWNetWorking",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/flyOfYW/YWNetWorking.git",
-    "tag": "0.1.9"
+    "tag": "0.2.2"
   },
   "platforms": {
     "ios": "8.0"
@@ -32,7 +32,7 @@
 
         ],
         "AFNetworking": [
-          "~> 3.2.1"
+
         ]
       }
     }

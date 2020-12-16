@@ -255,7 +255,10 @@ struct CacheFlagHas{
     
     self.userInfomation = [NSString stringWithFormat:@"%@",response.userInformation];
     
-    [self addNotifiAction:response.needLogin refreshToken:response.refreshToken];
+    //业务层可能涉及UI操作，因此保证在主线程发出通知
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self addNotifiAction:response.needLogin refreshToken:response.refreshToken];
+    });
     
     //1.拦截器(处理一些错误，比如登录/刷新token)
     BOOL isContinue = YES;
@@ -347,6 +350,7 @@ struct CacheFlagHas{
 }
 //MARK: --- add NotifiActio ----
 - (void)addNotifiAction:(BOOL)needLogin refreshToken:(BOOL)refreshToken{
+               
     if (needLogin) {
         [[NSNotificationCenter defaultCenter] postNotificationName:YWApiValidateResultKeyNSNotificationLogin
                                                             object:nil

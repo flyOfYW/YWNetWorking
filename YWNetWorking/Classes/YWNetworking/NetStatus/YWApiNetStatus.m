@@ -27,6 +27,9 @@
 #define HasAppleReachability (__has_include(<Reachability/Reachability.h>) || __has_include("Reachability.h"))
 
 
+/** 设置代理的通知key */
+NSString * const YWApiNetStatus_proxyStatus_key         = @"YWApiNetStatus_proxyStatus_key";
+
 
 @interface YWApiNetStatus ()
 @property (nonatomic, assign, readwrite, getter=isReachable) BOOL reachable;
@@ -125,15 +128,19 @@
     
     if ([[settings objectForKey:(NSString *)kCFProxyTypeKey]
          isEqualToString:@"kCFProxyTypeNone"]){
+        //没有设置代理
         @synchronized (self) {
             self.proxyStatus = NO;
         }
-        //没有设置代理
     }else{
+        //设置代理了
         @synchronized (self) {
             self.proxyStatus = YES;
         }
-        //设置代理了
+        //业务层可能涉及UI操作，因此保证在主线程发出通知
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:YWApiNetStatus_proxyStatus_key object:nil];
+        });
     }
 }
 

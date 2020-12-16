@@ -10,6 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/** 设置代理的通知key */
+extern NSString * const YWApiNetStatus_proxyStatus_key;
+
 
 @interface YWApiNetStatus : NSObject
 

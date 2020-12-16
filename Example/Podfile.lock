@@ -14,12 +14,12 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
-  - YWNetWorking (0.1.9):
-    - YWNetWorking/NetStatus (= 0.1.9)
-    - YWNetWorking/NetWork (= 0.1.9)
-  - YWNetWorking/NetStatus (0.1.9)
-  - YWNetWorking/NetWork (0.1.9):
-    - AFNetworking (~> 3.2.1)
+  - YWNetWorking (0.2.2):
+    - YWNetWorking/NetStatus (= 0.2.2)
+    - YWNetWorking/NetWork (= 0.2.2)
+  - YWNetWorking/NetStatus (0.2.2)
+  - YWNetWorking/NetWork (0.2.2):
+    - AFNetworking
     - YWNetWorking/NetStatus
 
 DEPENDENCIES:
@@ -35,8 +35,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  YWNetWorking: 69e2f6aae6e736543501ec347997b0b8e70eb95f
+  YWNetWorking: e426dde0c56720bde89d8ac2fef2f1962baa58a3
 
 PODFILE CHECKSUM: 34ef6f30c6150db5681283cd05976575213c95e9
 
-COCOAPODS: 1.8.3
+COCOAPODS: 1.10.0
