@@ -51,6 +51,9 @@ extern NSString * const YWApiNetStatus_proxyStatus_key;
  @return 网络类型
  */
 - (NSString *)getNetType;
+
+/// 判断vpn是否开启
+- (BOOL)isVpnOn;
 @end
 
 NS_ASSUME_NONNULL_END

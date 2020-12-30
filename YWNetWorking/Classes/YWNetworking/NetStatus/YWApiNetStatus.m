@@ -201,5 +201,20 @@ NSString * const YWApiNetStatus_proxyStatus_key         = @"YWApiNetStatus_proxy
     }
     return currentStatus;
 }
-
+- (BOOL)isVpnOn{
+    //ios 9 以上
+    BOOL flag = NO;
+    NSDictionary *dict = CFBridgingRelease(CFNetworkCopySystemProxySettings());
+    NSArray *keys = [dict[@"__SCOPED__"] allKeys];
+    for (NSString *key in keys) {
+        if ([key rangeOfString:@"tap"].location != NSNotFound ||
+            [key rangeOfString:@"tun"].location != NSNotFound ||
+            [key rangeOfString:@"ipsec"].location != NSNotFound ||
+            [key rangeOfString:@"ppp"].location != NSNotFound){
+            flag = YES;
+            break;
+        }
+    }
+    return flag;
+}
 @end

@@ -60,6 +60,14 @@
 - (void)manager:(YWBaseApiManager *)manager beforePerformSuccessWithResponse:(YWURLResponse *)response{
     
 }
+- (IBAction)agentAction:(id)sender {
+    [[YWApiNetStatus sharedInstance] simpleCheckProxyStatus];
+    NSLog(@"proxy status is :%d", (int)[YWApiNetStatus sharedInstance].isProxyStatus);
+}
+- (IBAction)vpnAction:(id)sender {
+    
+    NSLog(@"vpn is open :%d", (int)[[YWApiNetStatus sharedInstance] isVpnOn]);
+}
 
 - (IBAction)netTypeAction:(id)sender {
     

@@ -4,7 +4,7 @@ platform :ios, '8.0'
 
 target 'YWNetWorking_Example' do
   pod 'YWNetWorking', :path => '../'
-
+  pod 'Reachability'
   target 'YWNetWorking_Tests' do
     inherit! :search_paths
 

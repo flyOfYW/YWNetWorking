@@ -14,6 +14,7 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
+  - Reachability (3.2)
   - YWNetWorking (0.2.2):
     - YWNetWorking/NetStatus (= 0.2.2)
     - YWNetWorking/NetWork (= 0.2.2)
@@ -23,11 +24,13 @@ PODS:
     - YWNetWorking/NetStatus
 
 DEPENDENCIES:
+  - Reachability
   - YWNetWorking (from `../`)
 
 SPEC REPOS:
   trunk:
     - AFNetworking
+    - Reachability
 
 EXTERNAL SOURCES:
   YWNetWorking:
@@ -35,8 +38,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   YWNetWorking: e426dde0c56720bde89d8ac2fef2f1962baa58a3
 
-PODFILE CHECKSUM: 34ef6f30c6150db5681283cd05976575213c95e9
+PODFILE CHECKSUM: 33d63844e6227f92f7742099d472034a254ff205
 
 COCOAPODS: 1.10.0
