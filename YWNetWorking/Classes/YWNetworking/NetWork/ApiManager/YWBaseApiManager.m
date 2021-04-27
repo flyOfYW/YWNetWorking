@@ -86,6 +86,11 @@ struct CacheFlagHas{
                               fail:(void (^)(YWBaseApiManager * _Nonnull))failCallback{
     return [[[self alloc] init] sendRequestWithParams:params repeated:nil success:successCallback fail:failCallback];
 }
+- (NSInteger)sendRequestWithParams:(NSDictionary *)params
+                           success:(void (^)(YWBaseApiManager *))successCallback
+                              fail:(void (^)(YWBaseApiManager *))failCallback{
+    return [self sendRequestWithParams:params repeated:nil success:successCallback fail:failCallback];
+}
 - (NSInteger)sendRequest{
     
     //1.check url&parma

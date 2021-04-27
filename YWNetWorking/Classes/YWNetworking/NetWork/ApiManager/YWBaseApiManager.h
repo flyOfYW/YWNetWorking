@@ -58,6 +58,14 @@ NS_ASSUME_NONNULL_BEGIN
  @return 对应的taskIdentifier
  */
 + (NSInteger)sendRequestWithParams:(nullable NSDictionary *)params success:(void (^ _Nullable)(YWBaseApiManager * _Nonnull apiManager))successCallback fail:(void (^ _Nullable)(YWBaseApiManager * _Nonnull apiManager))failCallback;
+
+/// 对象方法
+/// @param params 参数
+/// @param successCallback 成功的回调
+/// @param failCallback 失败的回调
+- (NSInteger)sendRequestWithParams:(NSDictionary *)params
+                           success:(void (^)(YWBaseApiManager *))successCallback
+                              fail:(void (^)(YWBaseApiManager *))failCallback;
 /**
  发起请求
 
