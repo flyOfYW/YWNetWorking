@@ -430,6 +430,9 @@ struct CacheFlagHas{
             isContinue = [_cache managerIsContinueWhenFindCache:self];
             if (!isContinue) {
                 _isLoading = NO;
+                self.response = respne;
+                self.userInfomation = @"查询成功";
+                [self successCallOnMainThread];
             }
         }
         
@@ -442,12 +445,16 @@ struct CacheFlagHas{
                 [self failedCallOnMainThreadWhenFindCache];
                 return YES;
             }
-            [self successCallOnMainThreadWhenFindCache:[[YWURLResponse alloc] initWithCacheResponseObject:content]];
+            YWURLResponse *respne = [[YWURLResponse alloc] initWithCacheResponseObject:content];
+            [self successCallOnMainThreadWhenFindCache:respne];
             BOOL isContinue = YES;
             if (_cacheHas.continueFindCache) {
                 isContinue = [_cache managerIsContinueWhenFindCache:self];
                 if (!isContinue) {
                     _isLoading = NO;
+                    self.response = respne;
+                    self.userInfomation = respne.userInformation;
+                    [self successCallOnMainThread];
                 }
             }
             return isContinue;
