@@ -30,6 +30,8 @@
 /** 设置代理的通知key */
 NSString * const YWApiNetStatus_proxyStatus_key         = @"YWApiNetStatus_proxyStatus_key";
 
+/** 网络发生变化 */
+NSString * const YWApiNetStatus_netStatus_key           = @"YWApiNetStatus_netStatus_key";
 
 @interface YWApiNetStatus ()
 @property (nonatomic, assign, readwrite, getter=isReachable) BOOL reachable;
@@ -72,6 +74,7 @@ NSString * const YWApiNetStatus_proxyStatus_key         = @"YWApiNetStatus_proxy
     AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
     // 监听网络状态
     [manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        
         switch (status) {
             case AFNetworkReachabilityStatusUnknown://未知网络
                 self.reachable = NO;
@@ -90,10 +93,13 @@ NSString * const YWApiNetStatus_proxyStatus_key         = @"YWApiNetStatus_proxy
                 self.wifi = YES;
                 self.wifi = 1;
                 break;
-                
             default:
                 break;
         }
+        //业务层可能涉及UI操作，因此保证在主线程发出通知
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:YWApiNetStatus_netStatus_key object:nil];
+        });
     }];
     // 开启监测
     [manager startMonitoring];
@@ -114,6 +120,10 @@ NSString * const YWApiNetStatus_proxyStatus_key         = @"YWApiNetStatus_proxy
         self.reachable = YES;
         self.wifi = 2;
     }
+    //业务层可能涉及UI操作，因此保证在主线程发出通知
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:YWApiNetStatus_netStatus_key object:nil];
+    });
 #endif
     
 }
